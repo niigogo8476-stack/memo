@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>메모 앱 홈</title>
+<style>
+  :root {
+    --color-primary: #3182f6;
+    --surface-page: #f2f4f6;
+    --surface-card: #ffffff;
+    --text-primary: #191f28;
+    --text-secondary: #4e5968;
+    --text-muted: #8b95a1;
+    --blue-soft: #e8f3ff;  --blue: #3182f6;
+    --green-soft: #e3f8ec; --green: #1fa463;
+    --orange-soft: #fff1e5; --orange: #f2711c;
+    --pink-soft: #ffeaf1;  --pink: #e8467c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans KR", -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    background: #dfe3e8;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+  }
+  .screen {
+    width: 100%;
+    max-width: 390px;
+    min-height: 100vh;
+    background: var(--surface-page);
+    padding: 64px 16px 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+  }
+  .main { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+
+  /* Header */
+  .header { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
+  .date { font-size: 15px; line-height: 22px; font-weight: 500; color: var(--text-muted); letter-spacing: -0.2px; }
+  .title { font-size: 28px; line-height: 38px; font-weight: 700; letter-spacing: -0.8px; }
+  .title em { font-style: normal; color: var(--color-primary); }
+
+  /* Filter chips */
+  .filter { position: relative; display: flex; gap: 8px; padding: 0 4px; }
+  .indicator {
+    position: absolute; top: 0; left: 0; height: 36px;
+    background: var(--color-primary);
+    border-radius: 999px;
+    transition: transform .45s cubic-bezier(.4, 0, .2, 1), width .45s cubic-bezier(.4, 0, .2, 1);
+    pointer-events: none;
+  }
+  .chip {
+    position: relative; z-index: 1;
+    height: 36px; padding: 0 16px;
+    border: 0; border-radius: 999px;
+    background: var(--surface-card);
+    color: var(--text-secondary);
+    font-family: inherit; font-size: 15px; line-height: 22px; font-weight: 700; letter-spacing: -0.2px;
+    cursor: pointer;
+    transition: color .3s, background .3s;
+  }
+  .chip.selected { color: #fff; background: transparent; }
+
+  /* Cards */
+  .card { background: var(--surface-card); border-radius: 24px; padding: 8px 0; }
+  .card.gone { display: none; }
+  .card-header { height: 40px; display: flex; align-items: center; gap: 4px; padding: 12px 16px 4px 20px; }
+  .card-header h2 { flex: 1; font-size: 15px; line-height: 22px; font-weight: 700; letter-spacing: -0.2px; }
+  .card-header .action { display: flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 15px; font-weight: 500; letter-spacing: -0.2px; }
+  .card-header svg { width: 16px; height: 16px; }
+  .pin { color: var(--color-primary); }
+
+  .memo { height: 72px; display: flex; align-items: center; gap: 16px; padding: 12px 20px; cursor: pointer; }
+  .memo.gone { display: none; }
+  .memo.enter { animation: rise .45s cubic-bezier(.2, .7, .2, 1) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .tile { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .tile svg { width: 22px; height: 22px; }
+  .tile.blue { background: var(--blue-soft); color: var(--blue); }
+  .tile.green { background: var(--green-soft); color: var(--green); }
+  .tile.orange { background: var(--orange-soft); color: var(--orange); }
+  .tile.pink { background: var(--pink-soft); color: var(--pink); }
+  .content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .content b { font-size: 17px; line-height: 24px; font-weight: 700; letter-spacing: -0.3px; }
+  .content span { font-size: 14px; line-height: 20px; color: var(--text-secondary); letter-spacing: -0.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .when { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--text-muted); white-space: nowrap; }
+
+  /* Primary button */
+  .primary {
+    position: sticky; bottom: 34px;
+    height: 56px; border: 0; border-radius: 16px;
+    background: var(--color-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: inherit; font-size: 17px; line-height: 24px; font-weight: 700; letter-spacing: -0.2px;
+    cursor: pointer;
+  }
+  .primary svg { width: 20px; height: 20px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .indicator, .chip { transition: none; }
+    .memo.enter { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="screen">
+  <div class="main">
+    <div class="header">
+      <p class="date">10월 30일 금요일</p>
+      <h1 class="title">오늘까지 메모를<br><em>128개</em> 남겼어요</h1>
+    </div>
+
+    <div class="filter" id="filter">
+      <div class="indicator" id="indicator"></div>
+      <button class="chip selected" data-cat="전체">전체</button>
+      <button class="chip" data-cat="업무">업무</button>
+      <button class="chip" data-cat="개인">개인</button>
+      <button class="chip" data-cat="아이디어">아이디어</button>
+    </div>
+
+    <section class="card">
+      <div class="card-header">
+        <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6z"/></svg>
+        <h2>고정한 메모</h2>
+      </div>
+      <div class="memo" data-cat="업무">
+        <div class="tile blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div>
+        <div class="content"><b>디자인 리뷰 회의록</b><span>검수 기준과 다음 할 일 정리</span></div>
+        <p class="when">오늘</p>
+      </div>
+      <div class="memo" data-cat="개인">
+        <div class="tile green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div>
+        <div class="content"><b>주말 등산 준비</b><span>물 두 병, 간식, 바람막이 챙기기</span></div>
+        <p class="when">어제</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>최근 메모</h2>
+        <div class="action">전체 보기
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="memo" data-cat="개인">
+        <div class="tile pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div>
+        <div class="content"><b>장보기 목록</b><span>우유, 계란, 사과, 커피 원두</span></div>
+        <p class="when">오늘</p>
+      </div>
+      <div class="memo" data-cat="아이디어">
+        <div class="tile orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div>
+        <div class="content"><b>앱 아이콘 아이디어</b><span>메모지 모서리가 접힌 모양</span></div>
+        <p class="when">오늘</p>
+      </div>
+      <div class="memo" data-cat="개인">
+        <div class="tile green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div>
+        <div class="content"><b>읽을 책</b><span>디자인 시스템 책 두 권</span></div>
+        <p class="when">어제</p>
+      </div>
+    </section>
+  </div>
+
+  <button class="primary">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    새 메모 쓰기
+  </button>
+</div>
+
+<script>
+  const CATS = ["전체", "업무", "개인", "아이디어"];
+  const INTERVAL = 2600;
+
+  const chips = [...document.querySelectorAll(".chip")];
+  const indicator = document.getElementById("indicator");
+  const memos = [...document.querySelectorAll(".memo")];
+  const cards = [...document.querySelectorAll(".card")];
+
+  let index = 0;
+  let timer;
+
+  function select(i) {
+    index = i;
+    const cat = CATS[i];
+
+    // 칩: 선택 표시가 미끄러지듯 이동
+    chips.forEach((c, k) => c.classList.toggle("selected", k === i));
+    const chip = chips[i];
+    indicator.style.width = chip.offsetWidth + "px";
+    indicator.style.transform = "translateX(" + chip.offsetLeft + "px)";
+
+    // 목록: 해당 분류만 보이고 순서대로 올라오며 등장
+    let order = 0;
+    memos.forEach(m => {
+      const show = cat === "전체" || m.dataset.cat === cat;
+      m.classList.toggle("gone", !show);
+      m.classList.remove("enter");
+      if (show) {
+        void m.offsetWidth; // 애니메이션 재시작
+        m.style.animationDelay = (order++ * 70) + "ms";
+        m.classList.add("enter");
+      }
+    });
+    cards.forEach(c => c.classList.toggle("gone", !c.querySelector(".memo:not(.gone)")));
+  }
+
+  function startAuto() {
+    clearInterval(timer);
+    timer = setInterval(() => select((index + 1) % CATS.length), INTERVAL);
+  }
+
+  // 칩을 직접 누르면 그 칩부터 다시 자동 순환
+  chips.forEach((c, i) => c.addEventListener("click", () => { select(i); startAuto(); }));
+
+  select(0);
+  startAuto();
+  window.addEventListener("resize", () => select(index));
+</script>
+</body>
+</html>

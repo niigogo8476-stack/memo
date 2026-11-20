@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>메모 홈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --surface-page: #f2f4f6;
+    --surface-card: #ffffff;
+    --text-primary: #191f28;
+    --text-secondary: #4e5968;
+    --text-muted: #8b95a1;
+    --color-primary: #3182f6;
+    --on-primary: #ffffff;
+    --blue-soft: #e8f3ff;
+    --green-soft: #e3f8ec;
+    --orange-soft: #fff1e5;
+    --pink-soft: #ffeaf1;
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-xl: 24px;
+    --radius-full: 999px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--surface-page); }
+  body {
+    font-family: "Noto Sans KR", system-ui, sans-serif;
+    color: var(--text-primary);
+    background: var(--surface-page);
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  svg { display: block; flex: none; }
+
+  .screen {
+    width: 100%;
+    max-width: 390px;
+    min-height: 844px;
+    margin: 0 auto;
+    padding: 64px 16px 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: var(--surface-page);
+  }
+  main { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+
+  .header { padding: 0 8px; }
+  .date { font-size: 15px; font-weight: 500; line-height: 22px; letter-spacing: -0.2px; color: var(--text-muted); margin-bottom: 8px; }
+  .title { font-size: 28px; font-weight: 700; line-height: 38px; letter-spacing: -0.8px; color: var(--text-primary); }
+  .title em { font-style: normal; color: var(--color-primary); }
+
+  .filter { display: flex; gap: 8px; padding: 0 4px; overflow-x: auto; scrollbar-width: none; }
+  .filter::-webkit-scrollbar { display: none; }
+  .chip {
+    height: 36px; padding: 0 16px; flex: none;
+    border-radius: var(--radius-full);
+    background: var(--surface-card);
+    color: var(--text-secondary);
+    font-size: 15px; font-weight: 700; line-height: 22px; letter-spacing: -0.2px;
+  }
+  .chip[aria-pressed="true"] { background: var(--color-primary); color: var(--on-primary); }
+
+  .card { background: var(--surface-card); border-radius: var(--radius-xl); padding: 8px 0; }
+  .card-header { display: flex; align-items: center; gap: 4px; height: 40px; padding: 12px 16px 4px 20px; }
+  .card-title { flex: 1; font-size: 15px; font-weight: 700; line-height: 22px; letter-spacing: -0.2px; }
+  .card-action { display: flex; align-items: center; gap: 4px; font-size: 15px; font-weight: 500; line-height: 22px; letter-spacing: -0.2px; color: var(--text-muted); }
+
+  .memo { display: flex; align-items: center; gap: 16px; width: 100%; padding: 12px 20px; text-align: left; }
+  .tile { width: 44px; height: 44px; flex: none; border-radius: var(--radius-sm); display: grid; place-items: center; }
+  .tile.blue { background: var(--blue-soft); }
+  .tile.green { background: var(--green-soft); }
+  .tile.orange { background: var(--orange-soft); }
+  .tile.pink { background: var(--pink-soft); }
+  .memo-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .memo-title { font-size: 17px; font-weight: 700; line-height: 24px; letter-spacing: -0.3px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .memo-preview { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: -0.1px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .memo-date { font-size: 13px; font-weight: 500; line-height: 18px; color: var(--text-muted); white-space: nowrap; }
+
+  .cta {
+    height: 56px; width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 0 24px;
+    border-radius: var(--radius-md);
+    background: var(--color-primary); color: var(--on-primary);
+    font-size: 17px; font-weight: 700; line-height: 24px; letter-spacing: -0.2px;
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="note" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.83333" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6.41667 3.66667H12.8333L16.5 7.33333V18.3333H6.41667V3.66667Z"/>
+      <path d="M12.8333 3.66667V7.33333H16.5M9.16667 11H13.75M9.16667 14.6667H13.75"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="screen">
+  <main>
+    <header class="header">
+      <p class="date">10월 30일 금요일</p>
+      <h1 class="title">오늘까지 메모를<br><em>128개</em> 남겼어요</h1>
+    </header>
+
+    <div class="filter" role="group" aria-label="메모 분류">
+      <button class="chip" aria-pressed="true">전체</button>
+      <button class="chip" aria-pressed="false">업무</button>
+      <button class="chip" aria-pressed="false">개인</button>
+      <button class="chip" aria-pressed="false">아이디어</button>
+    </div>
+
+    <section class="card" aria-label="고정한 메모">
+      <div class="card-header">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 2.33333H10L9.4 5.8L11.3333 8H4.66667L6.6 5.8L6 2.33333Z" stroke="#3182F6" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 8V13.3333" stroke="#3182F6" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2 class="card-title">고정한 메모</h2>
+      </div>
+      <button class="memo">
+        <span class="tile blue" style="color:#3182F6"><svg width="22" height="22" aria-hidden="true"><use href="#note"/></svg></span>
+        <span class="memo-body"><span class="memo-title">디자인 리뷰 회의록</span><span class="memo-preview">검수 기준과 다음 할 일 정리</span></span>
+        <span class="memo-date">오늘</span>
+      </button>
+      <button class="memo">
+        <span class="tile green" style="color:#12A150"><svg width="22" height="22" aria-hidden="true"><use href="#note"/></svg></span>
+        <span class="memo-body"><span class="memo-title">주말 등산 준비</span><span class="memo-preview">물 두 병, 간식, 바람막이 챙기기</span></span>
+        <span class="memo-date">어제</span>
+      </button>
+    </section>
+
+    <section class="card" aria-label="최근 메모">
+      <div class="card-header">
+        <h2 class="card-title">최근 메모</h2>
+        <button class="card-action">전체 보기
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 4L10 8L6 12" stroke="#8B95A1" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      <button class="memo">
+        <span class="tile pink" style="color:#E5397A"><svg width="22" height="22" aria-hidden="true"><use href="#note"/></svg></span>
+        <span class="memo-body"><span class="memo-title">장보기 목록</span><span class="memo-preview">우유, 계란, 사과, 커피 원두</span></span>
+        <span class="memo-date">오늘</span>
+      </button>
+      <button class="memo">
+        <span class="tile orange" style="color:#F76808"><svg width="22" height="22" aria-hidden="true"><use href="#note"/></svg></span>
+        <span class="memo-body"><span class="memo-title">앱 아이콘 아이디어</span><span class="memo-preview">메모지 모서리가 접힌 모양</span></span>
+        <span class="memo-date">오늘</span>
+      </button>
+      <button class="memo">
+        <span class="tile green" style="color:#12A150"><svg width="22" height="22" aria-hidden="true"><use href="#note"/></svg></span>
+        <span class="memo-body"><span class="memo-title">읽을 책</span><span class="memo-preview">디자인 시스템 책 두 권</span></span>
+        <span class="memo-date">어제</span>
+      </button>
+    </section>
+  </main>
+
+  <button class="cta">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    새 메모 쓰기
+  </button>
+</div>
+</body>
+</html>

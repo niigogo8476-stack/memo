@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+/* 디자인 토큰: 이름은 CLAUDE.md(Figma 변수)와 같다. 값을 바꿀 때는 Figma와 CLAUDE.md도 함께 바꾼다. */
+
+/* 색 — Light */
+:root {
+  --color-primary: #3182f6;
+  --surface-page: #f2f4f6;
+  --surface-card: #ffffff;
+  --text-primary: #191f28;
+  --text-secondary: #4e5968;
+  --text-muted: #8b95a1;
+  --text-on-primary: #ffffff;
+  --border-default: #e5e8eb;
+  --label-blue: #3182f6;
+  --label-blue-soft: #e8f3ff;
+  --label-green: #12a150;
+  --label-green-soft: #e3f8ec;
+  --label-orange: #f76808;
+  --label-orange-soft: #fff1e5;
+  --label-pink: #e5397a;
+  --label-pink-soft: #ffeaf1;
+}
+
+/* 색 — Dark */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #4d94ff;
+    --surface-page: #101014;
+    --surface-card: #1c1c22;
+    --text-primary: #f1f3f5;
+    --text-secondary: #b3bac2;
+    --text-muted: #6e7783;
+    --text-on-primary: #ffffff;
+    --border-default: #2a2a33;
+    --label-blue: #6aa6ff;
+    --label-blue-soft: #1d2a40;
+    --label-green: #3ccb7f;
+    --label-green-soft: #17302a;
+    --label-orange: #ff9446;
+    --label-orange-soft: #3a2817;
+    --label-pink: #ff6fa2;
+    --label-pink-soft: #3b1d2a;
+  }
+}
+
+/* 간격 — var(--space-8)로 쓰거나 p-(--space-8), gap-(--space-8)처럼 쓴다 */
+:root {
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-34: 34px;
+  --space-48: 48px;
+  --space-64: 64px;
+}
+
+/* Tailwind 클래스 이름 연결 */
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-surface-page: var(--surface-page);
+  --color-surface-card: var(--surface-card);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-on-primary: var(--text-on-primary);
+  --color-border-default: var(--border-default);
+  --color-label-blue: var(--label-blue);
+  --color-label-blue-soft: var(--label-blue-soft);
+  --color-label-green: var(--label-green);
+  --color-label-green-soft: var(--label-green-soft);
+  --color-label-orange: var(--label-orange);
+  --color-label-orange-soft: var(--label-orange-soft);
+  --color-label-pink: var(--label-pink);
+  --color-label-pink-soft: var(--label-pink-soft);
+  --font-sans: var(--font-noto-sans-kr), "Noto Sans KR", sans-serif;
+}
+
+/* 모서리: rounded-sm, rounded-md, rounded-lg, rounded-xl, rounded-full */
+@theme {
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+}
+
+/* 텍스트 스타일: text-heading-xl 처럼 크기, 줄 높이, 자간, 굵기가 한 번에 적용된다 */
+@theme {
+  --text-heading-xl: 28px;
+  --text-heading-xl--line-height: 38px;
+  --text-heading-xl--letter-spacing: -0.8px;
+  --text-heading-xl--font-weight: 700;
+
+  --text-heading-lg: 26px;
+  --text-heading-lg--line-height: 36px;
+  --text-heading-lg--letter-spacing: -0.8px;
+  --text-heading-lg--font-weight: 700;
+
+  --text-title-lg: 20px;
+  --text-title-lg--line-height: 28px;
+  --text-title-lg--letter-spacing: -0.4px;
+  --text-title-lg--font-weight: 700;
+
+  --text-title-md: 17px;
+  --text-title-md--line-height: 24px;
+  --text-title-md--letter-spacing: -0.3px;
+  --text-title-md--font-weight: 700;
+
+  --text-label-md: 15px;
+  --text-label-md--line-height: 22px;
+  --text-label-md--letter-spacing: -0.2px;
+  --text-label-md--font-weight: 700;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 28px;
+  --text-body-md--letter-spacing: -0.2px;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-body-sm--letter-spacing: -0.1px;
+  --text-body-sm--font-weight: 400;
+
+  --text-caption-md: 15px;
+  --text-caption-md--line-height: 22px;
+  --text-caption-md--letter-spacing: -0.2px;
+  --text-caption-md--font-weight: 500;
+
+  --text-caption-sm: 13px;
+  --text-caption-sm--line-height: 18px;
+  --text-caption-sm--letter-spacing: 0px;
+  --text-caption-sm--font-weight: 500;
+
+  --text-button-md: 17px;
+  --text-button-md--line-height: 24px;
+  --text-button-md--letter-spacing: -0.2px;
+  --text-button-md--font-weight: 700;
+}
+
+body {
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  word-break: keep-all;
+}
+
+/* 메모 편집기(Editor): 상세 화면과 같은 텍스트 스타일 토큰으로 보인다 */
+.memo-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  outline: none;
+}
+.memo-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+}
+.memo-editor h2 {
+  font-size: var(--text-title-lg);
+  line-height: var(--text-title-lg--line-height);
+  letter-spacing: var(--text-title-lg--letter-spacing);
+  font-weight: var(--text-title-lg--font-weight);
+  color: var(--text-primary);
+}
+.memo-editor h3 {
+  font-size: var(--text-title-md);
+  line-height: var(--text-title-md--line-height);
+  letter-spacing: var(--text-title-md--letter-spacing);
+  font-weight: var(--text-title-md--font-weight);
+  color: var(--text-primary);
+}
+.memo-editor p,
+.memo-editor div,
+.memo-editor li {
+  font-size: var(--text-body-md);
+  line-height: var(--text-body-md--line-height);
+  letter-spacing: var(--text-body-md--letter-spacing);
+  font-weight: var(--text-body-md--font-weight);
+  color: var(--text-secondary);
+}
+.memo-editor b,
+.memo-editor strong {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.memo-editor ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.memo-editor li {
+  position: relative;
+  padding-left: var(--space-16);
+}
+.memo-editor li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+}
